@@ -1,0 +1,47 @@
+use GuestCounter
+
+create table Visitors (
+                        raport_id int primary key,
+						camera_id int not null,
+						guests_in int not null,
+						guests_out int not null,
+						raport_date SmallDateTime not null
+                        );
+
+create table Photos (
+						photo_id int primary key,
+                        camera_id int not null,
+						raport_date SmallDateTime not null,
+						photo_path nvarchar(255) not null
+                        );
+
+create table Cameras (
+                        camera_id int primary key not null,
+						camera_location nvarchar(63) not null
+                        );
+
+
+ALTER TABLE Photos
+add CONSTRAINT Photos_ID_FK FOREIGN KEY (camera_id) 
+REFERENCES Cameras(camera_id);
+
+ALTER TABLE Visitors
+add CONSTRAINT Visitors_ID_FK FOREIGN KEY (camera_id) 
+REFERENCES Cameras(camera_id);
+
+INSERT INTO Cameras values (1, 'hol')
+INSERT INTO Cameras values (2, 'kasa1')
+INSERT INTO Cameras values (3, 'kasa2')
+
+INSERT INTO Visitors values (1, 2, 3, 5, '2020-01-01 05:15:00')
+INSERT INTO Visitors values (2, 2, 4, 6, '2020-02-02 05:15:00')
+INSERT INTO Visitors values (3, 3, 5, 1, '2020-03-03 05:15:00')
+INSERT INTO Visitors values (4, 1, 3, 8, '2020-04-04 05:15:00')
+INSERT INTO Visitors values (5, 1, 1, 2, '2020-05-05 05:15:00')
+INSERT INTO Visitors values (6, 1, 5, 7,'2020-06-06 05:15:00')
+
+INSERT INTO Photos values (1, 3, '2020-01-01 05:15:00', 'path1')
+INSERT INTO Photos values (2, 1, '2020-02-02 05:15:00', 'path2')
+INSERT INTO Photos values (3, 2, '2020-03-03 05:15:00', 'path3')
+
+select * from Visitors
