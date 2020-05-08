@@ -4,3 +4,9 @@ C:\Users\neshi\source\repos\ProjektZespolowy\ProgramTechniczny\ProgramTechniczny
 C:\Users\neshi\source\repos\ProjektZespolowy\ProgramTechniczny\ProgramTechniczny\obj\Debug\ProgramTechniczny.csprojAssemblyReference.cache
 C:\Users\neshi\source\repos\ProjektZespolowy\ProgramTechniczny\ProgramTechniczny\obj\Debug\ProgramTechniczny.exe
 C:\Users\neshi\source\repos\ProjektZespolowy\ProgramTechniczny\ProgramTechniczny\obj\Debug\ProgramTechniczny.pdb
+C:\Users\neshi\Desktop\Developerka\PZ\ProgramTechniczny\ProgramTechniczny\bin\Debug\ProgramTechniczny.exe.config
+C:\Users\neshi\Desktop\Developerka\PZ\ProgramTechniczny\ProgramTechniczny\bin\Debug\ProgramTechniczny.exe
+C:\Users\neshi\Desktop\Developerka\PZ\ProgramTechniczny\ProgramTechniczny\bin\Debug\ProgramTechniczny.pdb
+C:\Users\neshi\Desktop\Developerka\PZ\ProgramTechniczny\ProgramTechniczny\obj\Debug\ProgramTechniczny.csprojAssemblyReference.cache
+C:\Users\neshi\Desktop\Developerka\PZ\ProgramTechniczny\ProgramTechniczny\obj\Debug\ProgramTechniczny.exe
+C:\Users\neshi\Desktop\Developerka\PZ\ProgramTechniczny\ProgramTechniczny\obj\Debug\ProgramTechniczny.pdb
