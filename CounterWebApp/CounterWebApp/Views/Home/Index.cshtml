@@ -1,8 +1,24 @@
-﻿@{
+﻿@model Visitors
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <div class="row justify-content-center m-3">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Stan osób na godzine: @Model.RaportDate</h3>
+                </div>
+
+                <div class="card-body text-center">
+                    <h4>Weszło: @Model.GuestsIn</h4>
+                    <h4>Wyszło: @Model.GuestsOut</h4>
+                </div>
+
+                <div class="card-footer text-center">
+                    <a asp-controller="home" asp-action="index" class="btn btn-primary">Refresh</a>
+                </div>
+            </div>
+        </div>
+    </div>

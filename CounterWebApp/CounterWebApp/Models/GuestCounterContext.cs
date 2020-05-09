@@ -6,10 +6,6 @@ namespace CounterWebApp.Models
 {
     public partial class GuestCounterContext : DbContext
     {
-        public GuestCounterContext()
-        {
-        }
-
         public GuestCounterContext(DbContextOptions<GuestCounterContext> options)
             : base(options)
         {
