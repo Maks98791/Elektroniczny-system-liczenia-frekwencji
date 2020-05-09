@@ -10,7 +10,12 @@ using System.Threading;
 using System.Data.SqlClient;
 using System.Data;
 using System.Drawing;
-using static System.Net.Mime.MediaTypeNames;
+//using static System.Net.Mime.MediaTypeNames;
+using System.Windows.Media.Imaging;
+using System.Drawing.Imaging;
+using Convert = System.Convert;
+using MemoryStream = System.IO.MemoryStream;
+using Image = System.Drawing.Image;
 
 namespace ProgramTechniczny
 {
@@ -18,16 +23,17 @@ namespace ProgramTechniczny
     {
         static string date;
         static byte[] myReadBuffer;
+        static string message = "";
 
         //Zwraca aktualną godzinę
         static string ActualData()
         {
-            date = DateTime.Now.ToString("HH:mm:ss");
+            date = DateTime.Now.ToString("yyyy-MM-d HH:mm:ss");
             return date;
         }
 
-        static string message = "";
-
+       
+        //zwraca odebrana wiadomosc w formacie stringa
         static string ReadData(NetworkStream network)
         {
             
@@ -56,6 +62,7 @@ namespace ProgramTechniczny
             return message;
         }
 
+        //pisze wiadomsoc do klienta/serwera(nie potrzebne ale tak o jest)
         static void WriteData(NetworkStream stream, string cmd)
         {
             stream.Write(Encoding.UTF8.GetBytes(cmd), 0,
@@ -63,6 +70,7 @@ namespace ProgramTechniczny
         }
 
 
+        //zwraca ip twojego kompa
         static public string getLocalIpAddres()
         {
             string localIpAddress = string.Empty;
@@ -76,79 +84,138 @@ namespace ProgramTechniczny
             else return ipaddress[0].ToString();
         }
 
-        static void textConvert(string message)
-        {
 
-            string[] pobrane = message.Split(';'); //pobrane[0] -> ile osob weszlo
-                                                   //pobran[1] -> ile osob wyszlo
-        }
-
-        /*public Image byteArrayToImage(byte[] bytesArr)
+        //proba zrobienia obrazu z tablicy bitow
+        static public Image byteArrayToImage(byte[] bytesArr)
         {
             using (MemoryStream memstr = new MemoryStream(bytesArr))
             {
                 Image img = Image.FromStream(memstr);
                 return img;
             }
-        }*/
+        }
 
-        static void zapisDoBazy(string message, int whereToSave)
+        //wszystko co odebralismy wsadzamy do bazy -> logika jest tu
+        static void zapisDoBazy(string message, int port)
         {
             //whereToSave - zmienna okreslajaca czy zapisac zdjecie, czy zapisac ilosc osob (1 - zdjecie, 2 - ilosc osob)
 
             string command = "";
             int idKamery = message[0] - '0'; //pobranie id kamery z 1 znaku ciagu
             message = message.Substring(1);
-            
-
-
-            if (whereToSave == 1) //zdjecie
-            {
-               /* using (MemoryStream mStream = new MemoryStream(byteArrayIn))
-                {
-                    return Image.FromStream(mStream);
-                    
-                }
-                */
-                command = "exec insert into costam values (" + idKamery + "," + message + "," + ActualData() + ");";
-            }
-            else if (whereToSave == 2) //ilosc osob
-            {
-                string[] listaOsob = message.Split(';'); // no 0 ile osob weszlo na 1 ile osob wyszlo
-                command = "exec insert into costam values (" + idKamery + "," + listaOsob[0] + ", " + listaOsob[1] + "," + ActualData() + ");";
-            }
 
             SqlConnection con;
             SqlCommand cmd;
 
             string connectString = "";
 
-                //connectString = "Data Source= " + ipAddress + ",1433; Network Library=DBMSSOCN; Initial Catalog =" + '"' + "BD2 komisy samochodowe" + '"' + "; User ID = " + login + "; Password=" + password + ";";
+            connectString = "Data Source= " + getLocalIpAddres() + ",1433; Network Library=DBMSSOCN; Initial Catalog =" + '"' + "GuestCounter" + '"' + "; User ID = " + "test" + "; Password=" + "test" + ";";
+            Console.WriteLine(port);
 
-                con = new SqlConnection(connectString);
+            con = new SqlConnection(connectString);
 
             try
             {
-                if (con.State == ConnectionState.Open) con.Close();
+                con.Open();
+                con.Close();
 
-                cmd = new SqlCommand(command, con);
+                Console.WriteLine("Laczenie z baza dziala pomyslnie");
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Laczenie z baza nie dziala. Sprawdz ustawienia bazy dla uzytkownika [test] i sprobuj ponownie");
+            }
+
+
+            if (port == 8080)
+            {
+                command = "insert into Photos (camera_id,guests_in,guests_out,raport_date) values (@idkam, @data, @path);";
+                Console.WriteLine("dziala");
+            }
+            else if (port == 8081)
+            {
+                command = "INSERT INTO Visitors(camera_id,guests_in,guests_out,raport_date) VALUES(@idkam, @ileWeszlo, @ileWyszlo, @data)";
+            }
+            else if (port == 8082)
+            {
+                command = "INSERT INTO Cameras(camera_location) VALUES(@idkam)";
+            }
+
+            cmd = new SqlCommand(command, con);
+
+            if (port == 8080) //zdjecie
+            {
+                Console.WriteLine("dziala 2");
+
+                string data = ActualData();
+                string newPath = data;
+                newPath = newPath.Replace('-', '_');
+                newPath = newPath.Replace(' ', '_');
+                newPath = newPath.Replace(':', '_');
+                newPath = newPath + ".png";
+
+                //TU POWINNO BYC PRZEKODOWANIE, ale dowiedzialem sie ze nie mozna stringa na png zmienic ot tak.... wiec albo juz wczesn
+                /*byte[] bytes = Encoding.ASCII.GetBytes(message); //ponowna konwersja wiadomosci na byte array
+                Console.WriteLine("dziala 3");
+                Image newImg = byteArrayToImage(bytes); //konwersja na obraz
+
+                Console.WriteLine("dziala 4");
+
+                //newImg.Save(@"C:\temp\" + newPath, ImageFormat.Png);
+                */
+
+                byte[] data2 = Convert.FromBase64String(message);
+                using (var stream = new MemoryStream(data2, 0, data.Length))
+                {
+                    Image image = Image.FromStream(stream);
+                    //TODO: do something with image
+                }
+
+
+
+
+                cmd.Parameters.Add(new SqlParameter("@idkam", idKamery));
+                cmd.Parameters.Add(new SqlParameter("@data", ActualData()));
+                cmd.Parameters.Add(new SqlParameter("@path", newPath));
+
+
+            }
+            else if (port == 8081) //ilosc osob
+            {
+                string[] listaOsob = message.Split(';'); // no 0 ile osob weszlo na 1 ile osob wyszlo
+               
+                cmd.Parameters.Add(new SqlParameter("@idkam", idKamery));
+                cmd.Parameters.Add(new SqlParameter("@ileWeszlo", listaOsob[0]));
+                cmd.Parameters.Add(new SqlParameter("@ileWyszlo", listaOsob[1]));
+                cmd.Parameters.Add(new SqlParameter("@data", ActualData().ToString()));
+
+            }
+            else if (port == 8082) //nowa kamera
+            {
+                cmd.Parameters.Add(new SqlParameter("@idkam", idKamery));
+            }
+
+ 
+            try
+            {
+                if (con.State == ConnectionState.Open) con.Close();
 
                 con.Open();
                 cmd.ExecuteNonQuery();
                 con.Close();
 
-
-                ActualData();
+                Console.WriteLine("Pomyslnie zapisano dane do bazy");
             }
             catch (Exception)
             {
-                Console.WriteLine("Nie udalo sie poprawnie wprowadzic danych do bazy danych z operacji nr " + whereToSave + ":   [1 - zdjecie, 2 - liczba gosci])");
+                Console.WriteLine("Nie udalo sie poprawnie wprowadzic danych do bazy danych z operacji nr " + port + ":   [1 - zdjecie, 2 - liczba gosci])");
             }
         }
 
+        //funkcja nasluchu dla info odnosnie liczby gosciu
         static void GuestListener()
         {
-            int port = 8080;
+            int port = 8081;
             Console.WriteLine("Weryfikacja gosci: Rozpoczynam nasluch na ip: " + getLocalIpAddres() + "  na porcie: " + port);
 
             IPAddress ipaddress = IPAddress.Parse(getLocalIpAddres());
@@ -174,7 +241,7 @@ namespace ProgramTechniczny
                     try
                     {
                         Console.WriteLine("Wiadomosc z portu: " + port + "    Tekst wiadomosci: " + message);
-                        //konwersja i zapis do bazy
+                        zapisDoBazy(message, port);
                         message = ""; //reset wiadomości
                     }
                     catch
@@ -190,9 +257,10 @@ namespace ProgramTechniczny
 
 
 
+        //funkcja nasluchu do odebrania obrazow
         static void PictureListener()
         {
-            int port = 8081;
+            int port = 8080;
             Console.WriteLine("Zapis zdjec z kamery: Rozpoczynam nasluch na ip: " + getLocalIpAddres() + "  na porcie: " + port);
 
             IPAddress ipaddress = IPAddress.Parse(getLocalIpAddres());
@@ -218,7 +286,7 @@ namespace ProgramTechniczny
                     try
                     {
                         Console.WriteLine("Wiadomosc z portu: " + port + "    Tekst wiadomosci: " + message);
-                        //konwersja i zapis do bazy
+                        zapisDoBazy(message, port);
                         message = ""; //reset wiadomości
                     }
                     catch
@@ -235,13 +303,16 @@ namespace ProgramTechniczny
         [Obsolete]
         static void Main(string[] args)
         {
+
+            //zapisDoBazy("13;3", 8081);
+            //string x = Console.ReadLine();
            
             Thread countGuest = new Thread(GuestListener);
             Thread getPicture = new Thread(PictureListener);
 
             countGuest.Start();
             getPicture.Start();
-
+            
 
         }
     }
