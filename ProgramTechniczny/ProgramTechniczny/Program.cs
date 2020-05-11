@@ -24,6 +24,7 @@ namespace ProgramTechniczny
         static string date;
         static byte[] myReadBuffer;
         static string message = "";
+        static int globalneIdKamery;
 
         //Zwraca aktualną godzinę
         static string ActualData()
@@ -62,6 +63,45 @@ namespace ProgramTechniczny
             return message;
         }
 
+        public static byte[] ReadFully(NetworkStream input)
+        {
+            byte[] buffer = new byte[16 * 1024];
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                int read;
+                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+
+                byte[] temp = ms.ToArray();
+
+                //if (BitConverter.IsLittleEndian)
+                //    Array.Reverse(temp);
+
+                //int lengh = temp.Length - 4 ;
+                //int i = BitConverter.ToInt32(temp, lengh);
+                //int x = BitConverter.ToInt32(temp, 0);
+                //Console.WriteLine("int {0}", i); // odczyt indeksu kamery
+                //Console.WriteLine("int {0}", x); // odczyt indeksu kamery
+                //Console.WriteLine(temp[lengh] + " " + temp[lengh + 1] + " " + temp[lengh + 2] + " " + temp[lengh + 3]);
+                //Console.WriteLine(temp[0] + " " + temp[ 1] + " " + temp[2] + " " + temp[3]);
+
+
+                string idkameryValue = temp[3].ToString();
+                globalneIdKamery = Int32.Parse(idkameryValue);
+
+                Console.WriteLine("Odczytane id z tablicy bitowej: " + globalneIdKamery);
+
+                byte[] temp2 = new byte[ms.ToArray().Length];
+                Array.Copy(temp, 4, temp2, 0, temp.Length - 4); //przekopiowanie wartosci do nowej tablicy
+                return temp2;
+            }
+        }
+
+
+
         //pisze wiadomsoc do klienta/serwera(nie potrzebne ale tak o jest)
         static void WriteData(NetworkStream stream, string cmd)
         {
@@ -96,13 +136,22 @@ namespace ProgramTechniczny
         }
 
         //wszystko co odebralismy wsadzamy do bazy -> logika jest tu
-        static void zapisDoBazy(string message, int port)
+        static void zapisDoBazy(string message, int port, byte[] array)
         {
             //whereToSave - zmienna okreslajaca czy zapisac zdjecie, czy zapisac ilosc osob (1 - zdjecie, 2 - ilosc osob)
-
+            Console.WriteLine("dzialam sobie");
             string command = "";
-            int idKamery = message[0] - '0'; //pobranie id kamery z 1 znaku ciagu
-            message = message.Substring(1);
+            int idKamery = 0;
+            try
+            {
+                idKamery = message[0] - '0'; //pobranie id kamery z 1 znaku ciagu
+                message = message.Substring(1);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Nie przetwarzam ciagu, wiec git");
+            }
+           
 
             SqlConnection con;
             SqlCommand cmd;
@@ -110,7 +159,6 @@ namespace ProgramTechniczny
             string connectString = "";
 
             connectString = "Data Source= " + getLocalIpAddres() + ",1433; Network Library=DBMSSOCN; Initial Catalog =" + '"' + "GuestCounter" + '"' + "; User ID = " + "test" + "; Password=" + "test" + ";";
-            Console.WriteLine(port);
 
             con = new SqlConnection(connectString);
 
@@ -129,8 +177,7 @@ namespace ProgramTechniczny
 
             if (port == 8080)
             {
-                command = "insert into Photos (camera_id,guests_in,guests_out,raport_date) values (@idkam, @data, @path);";
-                Console.WriteLine("dziala");
+                command = "insert into Photos (camera_id,raport_date,photo_path) values (@idkam, @data, @path);";
             }
             else if (port == 8081)
             {
@@ -145,40 +192,36 @@ namespace ProgramTechniczny
 
             if (port == 8080) //zdjecie
             {
-                Console.WriteLine("dziala 2");
-
                 string data = ActualData();
                 string newPath = data;
                 newPath = newPath.Replace('-', '_');
                 newPath = newPath.Replace(' ', '_');
                 newPath = newPath.Replace(':', '_');
-                newPath = newPath + ".png";
+                newPath = "kamera"+globalneIdKamery+"_"+ newPath + ".png";
 
-                //TU POWINNO BYC PRZEKODOWANIE, ale dowiedzialem sie ze nie mozna stringa na png zmienic ot tak.... wiec albo juz wczesn
-                /*byte[] bytes = Encoding.ASCII.GetBytes(message); //ponowna konwersja wiadomosci na byte array
-                Console.WriteLine("dziala 3");
-                Image newImg = byteArrayToImage(bytes); //konwersja na obraz
-
-                Console.WriteLine("dziala 4");
-
-                //newImg.Save(@"C:\temp\" + newPath, ImageFormat.Png);
-                */
-
-                byte[] data2 = Convert.FromBase64String(message);
-                using (var stream = new MemoryStream(data2, 0, data.Length))
+                string allPath = @"c:\\temp\" + newPath;
+                try
                 {
-                    Image image = Image.FromStream(stream);
-                    //TODO: do something with image
+                    MemoryStream tempms = new MemoryStream(array);
+
+                    Image i = Image.FromStream(tempms);
+
+
+                    i.Save(allPath, ImageFormat.Png);
+
+
+                    cmd.Parameters.Add(new SqlParameter("@idkam", globalneIdKamery));
+                    cmd.Parameters.Add(new SqlParameter("@data", ActualData().ToString()));
+                    cmd.Parameters.Add(new SqlParameter("@path", newPath));
+                    Console.WriteLine("Zdjecie zapisano");
                 }
+                catch(Exception e)
+                {
+                    Console.WriteLine("Nie mozna zapisac zdjecia do pliku");
+                }
+               
 
-
-
-
-                cmd.Parameters.Add(new SqlParameter("@idkam", idKamery));
-                cmd.Parameters.Add(new SqlParameter("@data", ActualData()));
-                cmd.Parameters.Add(new SqlParameter("@path", newPath));
-
-
+               
             }
             else if (port == 8081) //ilosc osob
             {
@@ -208,7 +251,7 @@ namespace ProgramTechniczny
             }
             catch (Exception)
             {
-                Console.WriteLine("Nie udalo sie poprawnie wprowadzic danych do bazy danych z operacji nr " + port + ":   [1 - zdjecie, 2 - liczba gosci])");
+                Console.WriteLine("Nie udalo sie poprawnie wprowadzic danych do bazy danych z operacji nr " + port + ":   [8080 - zdjecie, 8081 - liczba gosci])");
             }
         }
 
@@ -241,7 +284,8 @@ namespace ProgramTechniczny
                     try
                     {
                         Console.WriteLine("Wiadomosc z portu: " + port + "    Tekst wiadomosci: " + message);
-                        zapisDoBazy(message, port);
+                        byte[] array = { 0 };
+                        zapisDoBazy(message, port, array);
                         message = ""; //reset wiadomości
                     }
                     catch
@@ -281,20 +325,20 @@ namespace ProgramTechniczny
                 Console.WriteLine("ClientConnect");
 
                 NetworkStream network = client.GetStream();
-                if (ReadData(network) != string.Empty)
-                {
+                //MemoryStream tempMem = new MemoryStream();
+
                     try
                     {
-                        Console.WriteLine("Wiadomosc z portu: " + port + "    Tekst wiadomosci: " + message);
-                        zapisDoBazy(message, port);
-                        message = ""; //reset wiadomości
+                    Console.WriteLine(port);
+                    byte[] tempArray = ReadFully(network);
+                        //zapisDoBazy("nie ma", port, ReadFully(network)); //cala funkcja odczytania info i zapisu zdjecia
+                        zapisDoBazy("nie ma", port, tempArray); //cala funkcja odczytania info i zapisu zdjecia
+                    //Console.WriteLine("Zdjecie zapisano poprawnie");
                     }
                     catch
                     {
-                        Console.WriteLine("Nie mozna juz tu nic wyswietlic");
+                        Console.WriteLine("Brak zapisanego zdjecia");
                     }
-                }
-                else Console.WriteLine("Brak wiadomosci do odczytania");
 
                 client.Close();
             }
@@ -304,8 +348,6 @@ namespace ProgramTechniczny
         static void Main(string[] args)
         {
 
-            //zapisDoBazy("13;3", 8081);
-            //string x = Console.ReadLine();
            
             Thread countGuest = new Thread(GuestListener);
             Thread getPicture = new Thread(PictureListener);
