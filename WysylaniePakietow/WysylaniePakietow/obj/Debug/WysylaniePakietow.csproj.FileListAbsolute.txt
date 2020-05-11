@@ -4,3 +4,9 @@ C:\Users\neshi\source\repos\ProjektZespolowy\WysylaniePakietow\WysylaniePakietow
 C:\Users\neshi\source\repos\ProjektZespolowy\WysylaniePakietow\WysylaniePakietow\obj\Debug\WysylaniePakietow.csprojAssemblyReference.cache
 C:\Users\neshi\source\repos\ProjektZespolowy\WysylaniePakietow\WysylaniePakietow\obj\Debug\WysylaniePakietow.exe
 C:\Users\neshi\source\repos\ProjektZespolowy\WysylaniePakietow\WysylaniePakietow\obj\Debug\WysylaniePakietow.pdb
+C:\Users\neshi\Desktop\Developerka\PZ\WysylaniePakietow\WysylaniePakietow\bin\Debug\WysylaniePakietow.exe.config
+C:\Users\neshi\Desktop\Developerka\PZ\WysylaniePakietow\WysylaniePakietow\bin\Debug\WysylaniePakietow.exe
+C:\Users\neshi\Desktop\Developerka\PZ\WysylaniePakietow\WysylaniePakietow\bin\Debug\WysylaniePakietow.pdb
+C:\Users\neshi\Desktop\Developerka\PZ\WysylaniePakietow\WysylaniePakietow\obj\Debug\WysylaniePakietow.csprojAssemblyReference.cache
+C:\Users\neshi\Desktop\Developerka\PZ\WysylaniePakietow\WysylaniePakietow\obj\Debug\WysylaniePakietow.exe
+C:\Users\neshi\Desktop\Developerka\PZ\WysylaniePakietow\WysylaniePakietow\obj\Debug\WysylaniePakietow.pdb
