@@ -23,11 +23,30 @@ namespace CounterWebApp.Controllers
             _dbContextOptions = dbContextOptions;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             using var db = new GuestCounterContext(_dbContextOptions);
-            var raport = db.Visitors.FirstOrDefault(i => i.RaportId == 1);
-            return View(raport);
+
+            GuestsInfoViewModel model = new GuestsInfoViewModel
+            {
+                CurrentDate = DateTime.Now,
+                GuestsInside = 0,
+                GuestsIn = 0,
+                GuestsOut = 0
+            };
+
+            foreach(var raport in db.Visitors)
+            {
+                if (raport.RaportDate.Date == model.CurrentDate.Date)
+                {
+                    model.GuestsInside += raport.GuestsIn - raport.GuestsOut;
+                    model.GuestsIn += raport.GuestsIn;
+                    model.GuestsOut += raport.GuestsOut;
+                }
+            }
+
+            return View(model);
         }
 
         public IActionResult Privacy()
