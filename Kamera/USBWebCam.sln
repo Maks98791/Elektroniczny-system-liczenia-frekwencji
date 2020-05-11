@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "USBWebCam", "USBWebCam\USBWebCam.csproj", "{65EC803E-3DA0-414D-B5BC-D1F4D10A8629}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Unsafe|Any CPU = Unsafe|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65EC803E-3DA0-414D-B5BC-D1F4D10A8629}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65EC803E-3DA0-414D-B5BC-D1F4D10A8629}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65EC803E-3DA0-414D-B5BC-D1F4D10A8629}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65EC803E-3DA0-414D-B5BC-D1F4D10A8629}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65EC803E-3DA0-414D-B5BC-D1F4D10A8629}.Unsafe|Any CPU.ActiveCfg = Debug|Any CPU
+		{65EC803E-3DA0-414D-B5BC-D1F4D10A8629}.Unsafe|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {03AB7411-C97F-4DCD-A80B-908AAC16C748}
+	EndGlobalSection
+EndGlobal
