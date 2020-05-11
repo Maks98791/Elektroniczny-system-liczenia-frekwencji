@@ -39,8 +39,49 @@ namespace USBWebCam.Core
                         Encoding.UTF8.GetBytes(cmd).Length);
         }
 
+        public int PhotoSend(string ip, int port, byte[] array)
+        {
+            TcpClient client = new TcpClient();
+            bool move = false;
+            while (move == false)
+            {
+                try
+                {
+                    client.Connect(new IPEndPoint(IPAddress.Parse(ip), port));
+                    move = true;
+                }
+                catch
+                {
+                    Console.WriteLine("Brak sluchacza na tym porcie lub na tym adresie IP");
+                }
+            }
+
+            while (!client.Connected) { } // Wait for connection
+
+            try
+            {
+                
+                client.GetStream().Write(array, 0, array.Length);
+            }
+            catch
+            {
+                Console.WriteLine("Cant send message. Will try again");
+            }
+            try
+            {
+                client.Close();
+                Console.WriteLine("Polaczenie zostalo zamkniete przez klienta");
+                return 1;
+            }
+            catch
+            {
+                Console.WriteLine("Polaczenie zostalo zamkniete przez klienta");
+                return 0;
+            }
+        }
+
         public int MainFunction(string new_ip, int new_port, string message)
-        { 
+        {
             ip = new_ip;
             try
             {
@@ -53,6 +94,7 @@ namespace USBWebCam.Core
 
             while (true)
             {
+
 
                 TcpClient client = new TcpClient();
                 bool move = false;
@@ -70,8 +112,8 @@ namespace USBWebCam.Core
                         return 0;
                     }
                 }
-                
-                while (!client.Connected) { } // Wait for connection
+
+                //while (!client.Connected) { } // Wait for connection
 
                 try
                 {
@@ -90,10 +132,11 @@ namespace USBWebCam.Core
                 catch
                 {
                     Console.WriteLine("Polaczenie zostalo zamkniete przez klienta");
-                    return 0; 
+                    return 0;
                 }
             }
         }
     }
 }
+
 

@@ -42,8 +42,8 @@
             this.ButtonReset = new System.Windows.Forms.Button();
             this.CounterLabel = new System.Windows.Forms.Label();
             this.LabelPeople = new System.Windows.Forms.Label();
-            this.maskedTextBoxIP = new System.Windows.Forms.MaskedTextBox();
-            this.numericUpDownPort = new System.Windows.Forms.NumericUpDown();
+            this.maskedTextBoxIPVisitors = new System.Windows.Forms.MaskedTextBox();
+            this.numericUpDownPortVisitors = new System.Windows.Forms.NumericUpDown();
             this.IPLabel = new System.Windows.Forms.Label();
             this.PortLabel = new System.Windows.Forms.Label();
             this.TCPGroupBox = new System.Windows.Forms.GroupBox();
@@ -55,20 +55,36 @@
             this.IPDisconnectButton = new System.Windows.Forms.Button();
             this.IPCamGroupBox = new System.Windows.Forms.GroupBox();
             this.USBCamGroupBox = new System.Windows.Forms.GroupBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.buttonSendViewTime = new System.Windows.Forms.Button();
+            this.buttonSendView = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.maskedTextBoxIpView = new System.Windows.Forms.MaskedTextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.numericUpDownPortView = new System.Windows.Forms.NumericUpDown();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.buttonSave = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.numericUpDownKameraId = new System.Windows.Forms.NumericUpDown();
+            this.tbConsole = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.CameraPreview)).BeginInit();
             this.MovementDetectionGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownX)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPort)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPortVisitors)).BeginInit();
             this.TCPGroupBox.SuspendLayout();
             this.IPCamGroupBox.SuspendLayout();
             this.USBCamGroupBox.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPortView)).BeginInit();
+            this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownKameraId)).BeginInit();
             this.SuspendLayout();
             // 
             // CameraPreview
             // 
             this.CameraPreview.BackColor = System.Drawing.SystemColors.Control;
-            this.CameraPreview.Location = new System.Drawing.Point(12, 153);
+            this.CameraPreview.Location = new System.Drawing.Point(12, 176);
             this.CameraPreview.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.CameraPreview.Name = "CameraPreview";
             this.CameraPreview.Size = new System.Drawing.Size(444, 300);
@@ -170,7 +186,7 @@
             this.MovementDetectionGroupBox.Controls.Add(this.MovementDetectionButton);
             this.MovementDetectionGroupBox.Controls.Add(this.MovementLabel);
             this.MovementDetectionGroupBox.Controls.Add(this.MovementDetectionStopButton);
-            this.MovementDetectionGroupBox.Location = new System.Drawing.Point(464, 153);
+            this.MovementDetectionGroupBox.Location = new System.Drawing.Point(465, 264);
             this.MovementDetectionGroupBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.MovementDetectionGroupBox.Name = "MovementDetectionGroupBox";
             this.MovementDetectionGroupBox.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -301,33 +317,32 @@
             this.LabelPeople.TabIndex = 22;
             this.LabelPeople.Text = "Liczba osób:";
             // 
-            // maskedTextBoxIP
+            // maskedTextBoxIPVisitors
             // 
-            this.maskedTextBoxIP.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.maskedTextBoxIP.Location = new System.Drawing.Point(108, 25);
-            this.maskedTextBoxIP.Mask = "000.000.000.000";
-            this.maskedTextBoxIP.Name = "maskedTextBoxIP";
-            this.maskedTextBoxIP.Size = new System.Drawing.Size(254, 24);
-            this.maskedTextBoxIP.TabIndex = 20;
+            this.maskedTextBoxIPVisitors.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.maskedTextBoxIPVisitors.Location = new System.Drawing.Point(108, 25);
+            this.maskedTextBoxIPVisitors.Name = "maskedTextBoxIPVisitors";
+            this.maskedTextBoxIPVisitors.Size = new System.Drawing.Size(254, 24);
+            this.maskedTextBoxIPVisitors.TabIndex = 20;
             // 
-            // numericUpDownPort
+            // numericUpDownPortVisitors
             // 
-            this.numericUpDownPort.Location = new System.Drawing.Point(108, 55);
-            this.numericUpDownPort.Maximum = new decimal(new int[] {
+            this.numericUpDownPortVisitors.Location = new System.Drawing.Point(108, 55);
+            this.numericUpDownPortVisitors.Maximum = new decimal(new int[] {
             85565,
             0,
             0,
             0});
-            this.numericUpDownPort.Minimum = new decimal(new int[] {
+            this.numericUpDownPortVisitors.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.numericUpDownPort.Name = "numericUpDownPort";
-            this.numericUpDownPort.Size = new System.Drawing.Size(100, 22);
-            this.numericUpDownPort.TabIndex = 21;
-            this.numericUpDownPort.Value = new decimal(new int[] {
-            1,
+            this.numericUpDownPortVisitors.Name = "numericUpDownPortVisitors";
+            this.numericUpDownPortVisitors.Size = new System.Drawing.Size(100, 22);
+            this.numericUpDownPortVisitors.TabIndex = 21;
+            this.numericUpDownPortVisitors.Value = new decimal(new int[] {
+            8081,
             0,
             0,
             0});
@@ -355,15 +370,15 @@
             this.TCPGroupBox.Controls.Add(this.buttonSendPerTime);
             this.TCPGroupBox.Controls.Add(this.SendButton);
             this.TCPGroupBox.Controls.Add(this.PortLabel);
-            this.TCPGroupBox.Controls.Add(this.maskedTextBoxIP);
+            this.TCPGroupBox.Controls.Add(this.maskedTextBoxIPVisitors);
             this.TCPGroupBox.Controls.Add(this.IPLabel);
-            this.TCPGroupBox.Controls.Add(this.numericUpDownPort);
-            this.TCPGroupBox.Location = new System.Drawing.Point(464, 356);
+            this.TCPGroupBox.Controls.Add(this.numericUpDownPortVisitors);
+            this.TCPGroupBox.Location = new System.Drawing.Point(465, 487);
             this.TCPGroupBox.Name = "TCPGroupBox";
             this.TCPGroupBox.Size = new System.Drawing.Size(368, 123);
             this.TCPGroupBox.TabIndex = 24;
             this.TCPGroupBox.TabStop = false;
-            this.TCPGroupBox.Text = "TCP";
+            this.TCPGroupBox.Text = "TCP - wykrywanie gosci";
             // 
             // buttonSendPerTime
             // 
@@ -449,11 +464,154 @@
             this.USBCamGroupBox.TabStop = false;
             this.USBCamGroupBox.Text = "Kamera USB";
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.buttonSendViewTime);
+            this.groupBox1.Controls.Add(this.buttonSendView);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.maskedTextBoxIpView);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.numericUpDownPortView);
+            this.groupBox1.Location = new System.Drawing.Point(465, 625);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(368, 123);
+            this.groupBox1.TabIndex = 31;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "TCP - wysylanie obrazu";
+            // 
+            // buttonSendViewTime
+            // 
+            this.buttonSendViewTime.Location = new System.Drawing.Point(202, 83);
+            this.buttonSendViewTime.Name = "buttonSendViewTime";
+            this.buttonSendViewTime.Size = new System.Drawing.Size(160, 31);
+            this.buttonSendViewTime.TabIndex = 30;
+            this.buttonSendViewTime.Text = "Wysyłaj co 10 sekund";
+            this.buttonSendViewTime.UseVisualStyleBackColor = true;
+            this.buttonSendViewTime.Click += new System.EventHandler(this.buttonSendViewTime_Click);
+            // 
+            // buttonSendView
+            // 
+            this.buttonSendView.Location = new System.Drawing.Point(14, 83);
+            this.buttonSendView.Name = "buttonSendView";
+            this.buttonSendView.Size = new System.Drawing.Size(182, 31);
+            this.buttonSendView.TabIndex = 24;
+            this.buttonSendView.Text = "Wysyłaj ";
+            this.buttonSendView.UseVisualStyleBackColor = true;
+            this.buttonSendView.Click += new System.EventHandler(this.buttonSendView_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(11, 55);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(91, 17);
+            this.label1.TabIndex = 23;
+            this.label1.Text = "Numer portu:";
+            // 
+            // maskedTextBoxIpView
+            // 
+            this.maskedTextBoxIpView.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.maskedTextBoxIpView.Location = new System.Drawing.Point(108, 25);
+            this.maskedTextBoxIpView.Name = "maskedTextBoxIpView";
+            this.maskedTextBoxIpView.Size = new System.Drawing.Size(254, 24);
+            this.maskedTextBoxIpView.TabIndex = 20;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 25);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(65, 17);
+            this.label2.TabIndex = 22;
+            this.label2.Text = "Adres IP:";
+            // 
+            // numericUpDownPortView
+            // 
+            this.numericUpDownPortView.Location = new System.Drawing.Point(108, 55);
+            this.numericUpDownPortView.Maximum = new decimal(new int[] {
+            85565,
+            0,
+            0,
+            0});
+            this.numericUpDownPortView.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownPortView.Name = "numericUpDownPortView";
+            this.numericUpDownPortView.Size = new System.Drawing.Size(100, 22);
+            this.numericUpDownPortView.TabIndex = 21;
+            this.numericUpDownPortView.Value = new decimal(new int[] {
+            8080,
+            0,
+            0,
+            0});
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.buttonSave);
+            this.groupBox2.Controls.Add(this.label4);
+            this.groupBox2.Controls.Add(this.numericUpDownKameraId);
+            this.groupBox2.Location = new System.Drawing.Point(466, 176);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(370, 64);
+            this.groupBox2.TabIndex = 31;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Ustawienie ID kamery";
+            // 
+            // buttonSave
+            // 
+            this.buttonSave.Location = new System.Drawing.Point(244, 18);
+            this.buttonSave.Name = "buttonSave";
+            this.buttonSave.Size = new System.Drawing.Size(108, 31);
+            this.buttonSave.TabIndex = 29;
+            this.buttonSave.Text = "Ustaw";
+            this.buttonSave.UseVisualStyleBackColor = true;
+            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 25);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(75, 17);
+            this.label4.TabIndex = 22;
+            this.label4.Text = "ID kamery:";
+            // 
+            // numericUpDownKameraId
+            // 
+            this.numericUpDownKameraId.Location = new System.Drawing.Point(108, 25);
+            this.numericUpDownKameraId.Maximum = new decimal(new int[] {
+            9,
+            0,
+            0,
+            0});
+            this.numericUpDownKameraId.Name = "numericUpDownKameraId";
+            this.numericUpDownKameraId.Size = new System.Drawing.Size(100, 22);
+            this.numericUpDownKameraId.TabIndex = 21;
+            this.numericUpDownKameraId.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // tbConsole
+            // 
+            this.tbConsole.Location = new System.Drawing.Point(9, 487);
+            this.tbConsole.Multiline = true;
+            this.tbConsole.Name = "tbConsole";
+            this.tbConsole.Size = new System.Drawing.Size(447, 261);
+            this.tbConsole.TabIndex = 32;
+            this.tbConsole.Text = "Konsola programu:";
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(841, 491);
+            this.ClientSize = new System.Drawing.Size(848, 768);
+            this.Controls.Add(this.tbConsole);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.USBCamGroupBox);
             this.Controls.Add(this.IPCamGroupBox);
             this.Controls.Add(this.TCPGroupBox);
@@ -471,13 +629,20 @@
             this.MovementDetectionGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownX)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPort)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPortVisitors)).EndInit();
             this.TCPGroupBox.ResumeLayout(false);
             this.TCPGroupBox.PerformLayout();
             this.IPCamGroupBox.ResumeLayout(false);
             this.IPCamGroupBox.PerformLayout();
             this.USBCamGroupBox.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPortView)).EndInit();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownKameraId)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -495,8 +660,8 @@
         private System.Windows.Forms.Label LabelPeople;
         private System.Windows.Forms.Label CounterLabel;
         private System.Windows.Forms.Button ButtonReset;
-        private System.Windows.Forms.MaskedTextBox maskedTextBoxIP;
-        private System.Windows.Forms.NumericUpDown numericUpDownPort;
+        private System.Windows.Forms.MaskedTextBox maskedTextBoxIPVisitors;
+        private System.Windows.Forms.NumericUpDown numericUpDownPortVisitors;
         private System.Windows.Forms.Label IPLabel;
         private System.Windows.Forms.Label PortLabel;
         private System.Windows.Forms.GroupBox TCPGroupBox;
@@ -516,6 +681,18 @@
         private System.Windows.Forms.Label DirectionLabel;
         private System.Windows.Forms.RadioButton DirectionRL;
         private System.Windows.Forms.RadioButton DirectionLR;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button buttonSendViewTime;
+        private System.Windows.Forms.Button buttonSendView;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.MaskedTextBox maskedTextBoxIpView;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.NumericUpDown numericUpDownPortView;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.NumericUpDown numericUpDownKameraId;
+        private System.Windows.Forms.Button buttonSave;
+        private System.Windows.Forms.TextBox tbConsole;
     }
 }
 

@@ -8,6 +8,10 @@ using Accord.Math;
 using System.ComponentModel;
 using USBWebCam.Core;
 using System.Threading;
+using System.Data;
+using System.Data.SqlClient;
+using System.IO;
+using System.Drawing.Imaging;
 
 namespace USBWebCam.Forms
 {
@@ -26,6 +30,8 @@ namespace USBWebCam.Forms
         private int RL; 
         private TCPConnection TCPCon;
         private Thread thread;
+        private Thread thread2;
+        private Bitmap bitmap;
         enum CamType {
             None,
             USB,
@@ -42,7 +48,17 @@ namespace USBWebCam.Forms
             TCPCon = new TCPConnection();
             InitializeComponent();
         }
+
+        //funkcja zwraca aktualna date
         
+        static string ActualData()
+        {
+            string date;
+            date = DateTime.Now.ToString("yyyy-MM-d HH:mm:ss");
+            return date;
+        }
+
+
         /// <summary>
         /// Funkcja obsługująca zdarzenie wygenerowania nowej klatki obrazu.
         /// </summary>
@@ -55,6 +71,7 @@ namespace USBWebCam.Forms
                 CameraPreview.Image = cameraDriver.PrepareFrame(frame);
             if (mode == CamType.IP)
                 CameraPreview.Image = ipCameraDriver.PrepareFrame(frame);
+            bitmap = frame;
             
         }
 
@@ -205,21 +222,24 @@ namespace USBWebCam.Forms
 
         private void SendButton_Click(object sender, EventArgs e)
         {
-            string ip = maskedTextBoxIP.Text;
+            string ip = maskedTextBoxIPVisitors.Text;
+
+
             string message;
             if (DirectionLR.Checked)
-            { message = "in: " + LR.ToString() + " out:" + RL.ToString(); }
+            { message = numericUpDownKameraId.Value + LR.ToString() + ";" + RL.ToString(); } //to musi byc zmienione na id kamery + weszlo ; wyszlo
             else
-            { message = "in: " + RL.ToString() + " out:" + LR.ToString(); }
+            { message = numericUpDownKameraId.Value + RL.ToString() + ";" + LR.ToString(); }
 
-            int port = Decimal.ToInt32(numericUpDownPort.Value);
+          
+            int port = Decimal.ToInt32(numericUpDownPortVisitors.Value);
             if (TCPCon.MainFunction(ip, port, message) == 1)
             {
-                MessageBox.Show("Poprawnie przesłano liczbę osób na podany adres", "Liczba osób przesłana", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                tbConsole.AppendText("\r\n" + ActualData() + ": Poprawnie przesłano liczbę osób na adres: " + ip);
             }
             else
             {
-                MessageBox.Show("Brak sluchacza na tym porcie lub na tym adresie IP", "Brak słuchacza", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                tbConsole.AppendText("\r\n" + ActualData() + ": Brak sluchacza na tym porcie lub na tym adresie IP");
             }
         }
 
@@ -233,16 +253,17 @@ namespace USBWebCam.Forms
         {
             do
             {
-                string ip = maskedTextBoxIP.Text;
+                string ip = maskedTextBoxIPVisitors.Text;
                 string message;
                 if (DirectionLR.Checked)
-                { message = "in: " + LR.ToString() + " out:" + RL.ToString(); }
+                { message = numericUpDownKameraId.Value + LR.ToString() + ";" + RL.ToString(); } //to musi byc zmienione na id kamery + weszlo ; wyszlo
                 else
-                { message = "in: " + RL.ToString() + " out:" + LR.ToString(); }
-                int port = Decimal.ToInt32(numericUpDownPort.Value);
+                { message = numericUpDownKameraId.Value + RL.ToString() + ";" + LR.ToString(); }
+                int port = Decimal.ToInt32(numericUpDownPortVisitors.Value);
                 if (TCPCon.MainFunction(ip, port, message) == 1)
                 {
-                    MessageBox.Show("Poprawnie przesłano liczbę osób na podany adres", "Liczba osób przesłana", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //tbConsole.AppendText("\r\n" + ActualData() + ": Poprawnie przesłano liczbę osób na adres: " + ip);
+                    //MessageBox.Show("Poprawnie przesłano liczbę osób na podany adres", "Liczba osób przesłana", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
                 {
@@ -279,6 +300,75 @@ namespace USBWebCam.Forms
             IPConnectButton.Enabled = true;
             IPDisconnectButton.Enabled = false;
             mode = CamType.None;
+        }
+
+        private void buttonSave_Click(object sender, EventArgs e)
+        {
+            numericUpDownKameraId.Enabled = false;
+        }
+
+        //konwersja obrazu na tablice bitow
+        private byte[] convertImageToByteArray(Image image)
+        {
+            var ms = new MemoryStream();
+
+            image.Save(ms, ImageFormat.Png);
+
+            var bytes = ms.ToArray(); //caly obraz jest teraz w bytes
+
+            byte[] newBytes = new byte[bytes.Length + 4];
+            byte[] bytes2 = {0,0,0, (byte) numericUpDownKameraId.Value };
+
+            bytes2.CopyTo(newBytes, 0);
+            bytes.CopyTo(newBytes, 4);
+        
+            return newBytes;
+            
+        }
+        private void buttonSendView_Click(object sender, EventArgs e)
+        {
+            byte[] byteArray = convertImageToByteArray(CameraPreview.Image);
+
+            int tempval = (int)numericUpDownPortView.Value;
+            string ip = maskedTextBoxIpView.Text;
+            if (TCPCon.PhotoSend(ip, tempval, byteArray) == 1)
+            tbConsole.AppendText("\r\n" + ActualData() + ": Poprawnie przesłano zdjecie na adres: " + ip);
+            else
+            tbConsole.AppendText("\r\n" + ActualData() + ": Brak sluchacza na tym porcie lub na tym adresie IP");
+
+        }
+
+        private void buttonSendViewTime_Click(object sender, EventArgs e)
+        {
+            thread2 = new Thread(sentPicture);
+            thread2.Start();
+        }
+
+        private void sentPicture()
+        {
+            do
+            {
+                var ms = new MemoryStream();
+
+                CameraPreview.Image.Save(ms, ImageFormat.Png);
+
+                var bytes = ms.ToArray(); //caly obraz jest teraz w bytes
+
+                byte[] newBytes = new byte[bytes.Length + 4];
+                byte[] bytes2 = { 0, 0, 0, (byte)numericUpDownKameraId.Value };
+
+                bytes2.CopyTo(newBytes, 0);
+                bytes.CopyTo(newBytes, 4);
+
+                byte[] byteArray = newBytes;
+                int tempval = (int)numericUpDownPortView.Value;
+                string ip = maskedTextBoxIpView.Text;
+
+                int test = TCPCon.PhotoSend(ip, tempval, byteArray);
+
+                Thread.Sleep(10000);
+            }
+            while (true);
         }
     }
 }
