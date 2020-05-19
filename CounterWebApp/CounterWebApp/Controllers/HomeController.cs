@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CounterWebApp.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata.Ecma335;
+using CounterWebApp.ViewModels;
 
 namespace CounterWebApp.Controllers
 {
@@ -47,6 +49,42 @@ namespace CounterWebApp.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Statistics()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Statistics(StatParamsViewModel model)
+        {
+            using var db = new GuestCounterContext(_dbContextOptions);
+
+            var statList = new List<StatisticsViewModel>();
+
+            foreach (var raport in db.Visitors)
+            {
+                if (raport.RaportDate.Date >= model.BeginDate && raport.RaportDate.Date <= model.EndDate)
+                {
+                    StatisticsViewModel stat = new StatisticsViewModel
+                    {
+                        RaportDate = raport.RaportDate,
+                        GuestsIn = raport.GuestsIn,
+                        GuestsOut = raport.GuestsOut
+                    };
+
+                    statList.Add(stat);
+                }
+            }
+
+            return RedirectToAction("DisplayStatistics", statList);
+        }
+
+        public IActionResult DisplayStatistics(List<StatisticsViewModel> statisticsViewModel)
+        {
+            return View(statisticsViewModel);
         }
 
         public IActionResult Privacy()
