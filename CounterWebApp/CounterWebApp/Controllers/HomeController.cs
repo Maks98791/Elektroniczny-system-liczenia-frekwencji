@@ -52,6 +52,42 @@ namespace CounterWebApp.Controllers
         }
 
         [HttpGet]
+        public IActionResult DailyCounter()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult DailyCounter(DateViewModel model)
+        {
+            using var db = new GuestCounterContext(_dbContextOptions);
+
+            int count = 0;
+
+            foreach(var day in db.Visitors)
+            {
+                if(day.RaportDate.Date == model.Date.Date)
+                {
+                    count += day.GuestsIn;
+                }
+            }
+
+            DailyCounterViewModel counter = new DailyCounterViewModel
+            {
+                Date = model.Date.Date,
+                Visitors = count
+            };
+
+            return RedirectToAction("DailyStats", counter);
+        }
+
+        [HttpGet]
+        public IActionResult DailyStats()
+        {
+            return View();
+        }
+
+        [HttpGet]
         public IActionResult Statistics()
         {
             return View();
@@ -82,6 +118,7 @@ namespace CounterWebApp.Controllers
             return RedirectToAction("DisplayStatistics", statList);
         }
 
+        [HttpGet]
         public IActionResult DisplayStatistics(List<StatisticsViewModel> statisticsViewModel)
         {
             return View(statisticsViewModel);
