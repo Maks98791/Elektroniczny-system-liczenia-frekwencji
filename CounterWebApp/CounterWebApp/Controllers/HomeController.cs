@@ -74,11 +74,11 @@ namespace CounterWebApp.Controllers
 
             DailyCounterViewModel counter = new DailyCounterViewModel
             {
-                Date = model.Date.Date,
+                Date = model.Date,
                 Visitors = count
             };
 
-            return RedirectToAction("DailyStats", counter);
+            return View("DailyStats", counter);
         }
 
         [HttpGet]
